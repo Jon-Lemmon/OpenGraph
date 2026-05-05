@@ -219,7 +219,7 @@ class Exp:
         log('Model Saved: %s' % args.save_path)
 
     def load_model(self):
-        ckp = t.load('../Models/' + args.load_model + '.mod')
+        ckp = t.load('../Models/' + args.load_model + '.mod', weights_only=False)
         self.model = ckp['model']
         self.opt = t.optim.Adam(self.model.parameters(), lr=args.lr, weight_decay=0)
 

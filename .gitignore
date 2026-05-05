@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Virtual envs
+venv/
+.env/
+conda-env/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# VSCode
+.vscode/
+
+# Dados
+datasets/
+
+# Modelos
+Models/
+
+# Logs
+logs/
+*.log
+
+# Outputs
+outputs/
+node_classification/Resultados/
+
+# Torch
+*.pt
+*.pth
+
+# Tensorflow
+*.ckpt
+
+# NumPy
+*.npy
+
+# Linux
+.DS_Store

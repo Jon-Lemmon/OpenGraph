@@ -330,7 +330,7 @@ class OpenGraph(nn.Module):
         pck_embeds = final_embeds[nodes]
         class_embeds = final_embeds[-args.class_num:]
         preds = pck_embeds @ class_embeds.T
-        return t.argmax(preds, dim=-1)
+        return t.argmax(preds, dim=-1), final_embeds
 
 class ALRS:
     def __init__(self, optimizer, loss_threshold=0.01, loss_ratio_threshold=0.01, decay_rate=0.97):

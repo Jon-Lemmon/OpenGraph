@@ -54,8 +54,16 @@ class Exp:
             res_summary = dict()
             times = 10
             for i in range(times):
-                reses = self.test_epoch(handler.tst_loader, handler)
+                reses, resulting_predict, embeddings = self.test_epoch(handler.tst_loader, handler)
                 log(self.make_print('Test', args.epoch, reses, False, handler.data_name))
+################# Armazenando as predições e embeddings geradas
+                if i == 0:
+                    with open('./Resultados/predicoes/predict'+str(i)+'.pkl', 'wb') as f:
+                        pickle.dump(resulting_predict, f)
+
+                    with open('./Resultados/embeddings/embedding'+str(i)+'.pkl', 'wb') as f:
+                        pickle.dump(embeddings, f)
+#################
                 self.add_res_to_summary(res_summary, reses)
                 self.multi_handler.remake_initial_projections()
             for key in res_summary:
@@ -105,22 +113,33 @@ class Exp:
                 initial_projector = tst_handler.initial_projector
                 if args.cache_proj == 0:
                     initial_projector = initial_projector.to(args.devices[0])
-                preds = self.model.pred_for_node_test(nodes, adj, initial_projector, rerun_embed=False if i!=0 else True)
+################# Obtendo a predição e a embedding gerada
+                preds, final_embed = self.model.pred_for_node_test(nodes, adj, initial_projector, rerun_embed=False if i!=0 else True)
+#################
                 if i == 0:
                     all_preds, all_labels = preds, labels
+                    final_final_embed = [final_embed[nodes]]
                 else:
                     all_preds = t.concatenate([all_preds, preds])
                     all_labels = t.concatenate([all_labels, labels])
+                    final_final_embed += [final_embed[nodes]]
                 hit = (labels == preds).float().sum().item()
                 ep_acc += hit
                 ep_tot += labels.shape[0]
                 log('Steps %d/%d: hit = %d, tot = %d          ' % (i, steps, ep_acc, ep_tot), save=False, oneline=True)
                 # t.cuda.empty_cache()
+######### Armazenando a predição realizada
+        results = {
+            "preds": all_preds.cpu().numpy(),
+            "labels": all_labels.cpu().numpy(),
+            "nodes": nodes.cpu().numpy()
+        }
+#########
         ret = dict()
         ret['Acc'] = ep_acc / ep_tot
         ret['F1'] = f1_score(all_labels.cpu().numpy(), all_preds.cpu().numpy(), average='macro')
         t.cuda.empty_cache()
-        return ret
+        return ret, results, final_final_embed
     
     def calc_recall_ndcg(self, topLocs, tstLocs, batIds):
         assert topLocs.shape[0] == len(batIds)
@@ -154,7 +173,7 @@ class Exp:
         log('Model Saved: %s' % args.save_path)
 
     def load_model(self):
-        ckp = t.load('../Models/' + args.load_model + '.mod')
+        ckp = t.load('../Models/' + args.load_model + '.mod', weights_only=False)
         self.model = ckp['model'].to(args.devices[1])
         self.opt = t.optim.Adam(self.model.parameters(), lr=args.lr, weight_decay=0)
 
