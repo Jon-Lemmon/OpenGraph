@@ -12,7 +12,8 @@ conda-env/
 .ipynb_checkpoints/
 
 # VSCode
-.vscode/
+.vscode/*
+#!.vscode/settings.json
 
 # Dados
 datasets/

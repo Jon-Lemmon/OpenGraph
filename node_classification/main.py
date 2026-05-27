@@ -52,17 +52,16 @@ class Exp:
             # reses = self.test_epoch(handler.val_loader, handler)
             # log(self.make_print('Valid', args.epoch, reses, True, handler.data_name))
             res_summary = dict()
-            times = 10
+            times = 0
             for i in range(times):
                 reses, resulting_predict, embeddings = self.test_epoch(handler.tst_loader, handler)
                 log(self.make_print('Test', args.epoch, reses, False, handler.data_name))
 ################# Armazenando as predições e embeddings geradas
-                if i == 0:
-                    with open('./Resultados/predicoes/predict'+str(i)+'.pkl', 'wb') as f:
-                        pickle.dump(resulting_predict, f)
+                with open('./Resultados/predicoes/predict'+str(i)+'.pkl', 'wb') as f:
+                    pickle.dump(resulting_predict, f)
 
-                    with open('./Resultados/embeddings/embedding'+str(i)+'.pkl', 'wb') as f:
-                        pickle.dump(embeddings, f)
+                with open('./Resultados/embeddings/embedding'+str(i)+'.pkl', 'wb') as f:
+                    pickle.dump(embeddings, f)
 #################
                 self.add_res_to_summary(res_summary, reses)
                 self.multi_handler.remake_initial_projections()
