@@ -52,7 +52,7 @@ class Exp:
             # reses = self.test_epoch(handler.val_loader, handler)
             # log(self.make_print('Valid', args.epoch, reses, True, handler.data_name))
             res_summary = dict()
-            times = 0
+            times = 1
             for i in range(times):
                 reses, resulting_predict, embeddings = self.test_epoch(handler.tst_loader, handler)
                 log(self.make_print('Test', args.epoch, reses, False, handler.data_name))

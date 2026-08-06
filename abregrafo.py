@@ -53,3 +53,50 @@ def bizoia_resultados(n: int, embedding_size: int):
     print('Recall:', media['recall']/n)
     print()
 
+
+def remove_onlysenders(dataset: pd.DataFrame):
+  '''
+    Somente aplicável em datasets provenientes do SAML-D. Reduz iterativamente o dataset removendo arestas cujo sender nunca foi receiver, até todos terem sido receivers.
+  '''
+  df = dataset
+  iteration = 0
+  while True:
+    accounts = pd.concat([df['Sender_account'], df['Receiver_account']]).unique()
+    accounts_set = set(accounts)
+
+    senders = set(df['Sender_account'])
+    receivers = set(df['Receiver_account'])
+
+    #print(f'Quantos accounts pssuem arestas bidirecionais?   {len(senders.intersection(receivers))} ({len(senders.intersection(receivers))/len(accounts_set)*100}%)')
+    #print(f'Quantos accounts foram só senders?              {len(senders - receivers)} ({len(senders - receivers)/len(accounts_set)*100}%)')
+    #print(f'Quantos accounts foram só receivers?            {len(receivers - senders)} ({len(receivers - senders)/len(accounts_set)*100}%)')
+
+    bad_transactions = df[df['Sender_account'].isin(senders - receivers) == True]
+
+    #print('Iteração', iteration)
+    #print(f'Total de transações no dataset:   {df.size}')
+    #print(f'Quantidade de "transações ruins": {bad_transactions.size} ({bad_transactions.size/df.size * 100})')
+
+    if(bad_transactions.size == 0):
+      very_good_transactions = df
+      break
+    else:
+      iteration += 1
+
+    # Quantos receiver accounts são só receivers
+    #df[df['Receiver_account'].isin(receivers - senders) == True].size/df.size * 100
+    #print('Quantidade de receiver que são só receivers:', df[df['Receiver_account'].isin(receivers - senders) == True].size/df.size * 100)
+
+    good_transactions = df[df['Sender_account'].isin(senders - receivers) == False]
+
+    df = good_transactions
+    #print()
+    #print('='*50)
+    #print()
+
+  print('Última iteração:', iteration)
+  print('Quantidade de nós restantes:', very_good_transactions['Receiver_account'].unique().size)
+  print('Porcentagem de transações removidas:', very_good_transactions.size/dataset.size)
+  return very_good_transactions
+
+
