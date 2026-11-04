@@ -57,10 +57,14 @@ class Exp:
                 reses, resulting_predict, embeddings = self.test_epoch(handler.tst_loader, handler)
                 log(self.make_print('Test', args.epoch, reses, False, handler.data_name))
 ################# Armazenando as predições e embeddings geradas
-                with open('./Resultados/predicoes/predict'+str(i)+'.pkl', 'wb') as f:
+                predicoes_path = './Resultados/predicoes/'+args.tstdata+'adj'+('_' if args.adj_file else '')+args.adj_file+'_mask'+('_' if args.mask_file else '')+args.mask_file +'/predict'+str(i)+'.pkl'
+                os.makedirs(os.path.dirname(predicoes_path), exist_ok=True)
+                with open(predicoes_path, 'wb') as f:
                     pickle.dump(resulting_predict, f)
 
-                with open('./Resultados/embeddings/embedding'+str(i)+'.pkl', 'wb') as f:
+                embeddings_path = './Resultados/embeddings/'+args.tstdata+'adj'+('_' if args.adj_file else '')+args.adj_file+'_mask'+('_' if args.mask_file else '')+args.mask_file +'/predict'+str(i)+'.pkl'
+                os.makedirs(os.path.dirname(embeddings_path), exist_ok=True)
+                with open(embeddings_path, 'wb') as f:
                     pickle.dump(embeddings, f)
 #################
                 self.add_res_to_summary(res_summary, reses)

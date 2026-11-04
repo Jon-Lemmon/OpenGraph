@@ -1,13 +1,10 @@
 import argparse
 
 def parse_args():
-    # custom args
-    parser.add_argument('--adj', default='-1', type=str, help='posfix of the target adjacency matrix file')
-    parser.add_argument('--feat', default='', type=str, help='posfix of the target features file')
-    parser.add_argument('--label', default='', type=str, help='posfix of the target label file')
-    parser.add_argument('--mask', default='-1', type=str, help='posfix of the target mask file')
-
     parser = argparse.ArgumentParser(description='Model Parameters')
+    parser.add_argument('--adj_file', default='-1', type=str, help='Posfix of target adjacency matrix file')
+    parser.add_argument('--label_file', default='', type=str, help='Posfix of target label file')
+    parser.add_argument('--mask_file', default='-1', type=str, help='Posfix of target mask file')
     parser.add_argument('--lr', default=1e-4, type=float, help='learning rate')
     parser.add_argument('--batch', default=1024, type=int, help='training batch size')
     parser.add_argument('--tst_batch', default=256, type=int, help='testing batch size (number of users)')
