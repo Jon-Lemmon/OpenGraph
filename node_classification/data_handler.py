@@ -46,9 +46,9 @@ class DataHandler:
     
     def get_data_files(self):
         predir = os.path.join(args.data_dir, self.data_name)
-        self.adj_file = os.path.join(predir, 'adj_-1.pkl')
-        self.label_file = os.path.join(predir, 'label.pkl')
-        self.mask_file = os.path.join(predir, 'mask_-1.pkl')
+        self.adj_file = os.path.join(predir, 'adj'+ ('_' if args.adj else '') + args.adj +'.pkl'))
+        self.label_file = os.path.join(predir, 'label'+ ('_' if args.label else '') + args.label +'.pkl')
+        self.mask_file = os.path.join(predir, 'mask'+ ('_' if args.mask else '') + args.mask +'.pkl'))
 
     def load_one_file(self, filename):
         with open(filename, 'rb') as fs:
