@@ -57,12 +57,12 @@ class Exp:
                 reses, resulting_predict, embeddings = self.test_epoch(handler.tst_loader, handler)
                 log(self.make_print('Test', args.epoch, reses, False, handler.data_name))
 ################# Armazenando as predições e embeddings geradas
-                predicoes_path = './Resultados/predicoes/'+args.tstdata+'adj'+('_' if args.adj_file else '')+args.adj_file+'_mask'+('_' if args.mask_file else '')+args.mask_file +'/predict'+str(i)+'.pkl'
+                predicoes_path = './Resultados/predicoes/'+args.tstdata+'/adj'+('_' if args.adj_file else '')+args.adj_file+'_mask'+('_' if args.mask_file else '')+args.mask_file +'/predict'+str(i)+'.pkl'
                 os.makedirs(os.path.dirname(predicoes_path), exist_ok=True)
                 with open(predicoes_path, 'wb') as f:
                     pickle.dump(resulting_predict, f)
 
-                embeddings_path = './Resultados/embeddings/'+args.tstdata+'adj'+('_' if args.adj_file else '')+args.adj_file+'_mask'+('_' if args.mask_file else '')+args.mask_file +'/predict'+str(i)+'.pkl'
+                embeddings_path = './Resultados/embeddings/'+args.tstdata+'/adj'+('_' if args.adj_file else '')+args.adj_file+'_mask'+('_' if args.mask_file else '')+args.mask_file +'/embedding'+str(i)+'.pkl'
                 os.makedirs(os.path.dirname(embeddings_path), exist_ok=True)
                 with open(embeddings_path, 'wb') as f:
                     pickle.dump(embeddings, f)
