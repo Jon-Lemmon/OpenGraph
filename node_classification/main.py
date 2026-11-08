@@ -54,7 +54,7 @@ class Exp:
             res_summary = dict()
             times = 1
             for i in range(times):
-                reses, resulting_predict, embeddings = self.test_epoch(handler.tst_loader, handler)
+                reses, resulting_predict, embeddings, total_embedding = self.test_epoch(handler.tst_loader, handler)
                 log(self.make_print('Test', args.epoch, reses, False, handler.data_name))
 ################# Armazenando as predições e embeddings geradas
                 predicoes_path = './Resultados/predicoes/'+args.tstdata+'/adj'+('_' if args.adj_file else '')+args.adj_file+'_mask'+('_' if args.mask_file else '')+args.mask_file +'/predict'+str(i)+'.pkl'
@@ -66,6 +66,11 @@ class Exp:
                 os.makedirs(os.path.dirname(embeddings_path), exist_ok=True)
                 with open(embeddings_path, 'wb') as f:
                     pickle.dump(embeddings, f)
+
+                embeddings_path = './Resultados/embeddings/'+args.tstdata+'/adj'+('_' if args.adj_file else '')+args.adj_file+'_mask'+('_' if args.mask_file else '')+args.mask_file +'/total_embedding'+str(i)+'.pkl'
+                os.makedirs(os.path.dirname(embeddings_path), exist_ok=True)
+                with open(embeddings_path, 'wb') as f:
+                    pickle.dump(total_embedding, f)
 #################
                 self.add_res_to_summary(res_summary, reses)
                 self.multi_handler.remake_initial_projections()
@@ -122,6 +127,7 @@ class Exp:
                 if i == 0:
                     all_preds, all_labels = preds, labels
                     final_final_embed = [final_embed[nodes]]
+                    final_final_final_embed = [final_embed]
                 else:
                     all_preds = t.concatenate([all_preds, preds])
                     all_labels = t.concatenate([all_labels, labels])
@@ -142,7 +148,7 @@ class Exp:
         ret['Acc'] = ep_acc / ep_tot
         ret['F1'] = f1_score(all_labels.cpu().numpy(), all_preds.cpu().numpy(), average='macro')
         t.cuda.empty_cache()
-        return ret, results, final_final_embed
+        return ret, results, final_final_embed, final_final_final_embed
     
     def calc_recall_ndcg(self, topLocs, tstLocs, batIds):
         assert topLocs.shape[0] == len(batIds)
